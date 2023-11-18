@@ -1,6 +1,6 @@
 <h1 align="center">Zabbix 6.4</h1>
 <p align="center">
-  <img src="https://your-image-url.com" alt="Zabbix 6.4 Logo">
+  <img src="[https://your-image-url.com](https://cdn.icon-icons.com/icons2/2699/PNG/512/zabbix_logo_icon_168734.png)" alt="Zabbix 6.4 Logo">
 </p>
 
 <p align="center">
