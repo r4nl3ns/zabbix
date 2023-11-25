@@ -25,10 +25,18 @@ Clone o repositório:
 ```bash
 git clone https://github.com/r4nl3ns/zabbix-6.4.git
 cd zabbix
+```
 
 Permissões:
+
 ```bash
 chmod +x /zabbix/*.sh
+```
 
+Execute na seguinte orden:
+
+```bash
+./config-ambiente.sh
+```
 
 
