@@ -25,9 +25,10 @@ Clone o repositório:
 ```bash
 git clone https://github.com/r4nl3ns/zabbix-6.4.git
 cd zabbix
-```
-Dentro do diretório `/zabbix` execute cada shell de acordo com a ordem.
 
-De permissões de `chmod +x /zabbix/*.sh
-` para conseguir executar cada shell.
-## Primeiro: `./config-ambiente.sh` assim vamos deixar todo o ambiente com pacotes necessários.
+Permissões:
+```bash
+chmod +x /zabbix/*.sh
+
+
+
