@@ -24,10 +24,7 @@ echo "# ATTENTION - EXECUTE TODO O BASH COMO ROOT"
 ### END PROJECT INFO
 
 
-echo "Vamos instalar os pacotes necessarios para trabalhar aqui."
-dnf -y install net-tools
-dnf -y install nano
-dnf install openssl
+echo "Defino que (zabbix) deve ser excluído durante as operações do gerenciador de pacotes"
 echo "excludepkgs=zabbix*" | sudo tee -a /etc/yum.repos.d/rocky.repo
 sleep 0.3
 
@@ -41,7 +38,7 @@ fi
 SEU_IP=$(hostname -I | awk '{print $1}')
 
 # Domínio a ser associado ao IP
-DOMINIO="monx.zabbix.com"
+DOMINIO="monx.com"
 
 # Adiciona a entrada no /etc/hosts
 echo "$SEU_IP $DOMINIO" >> /etc/hosts
@@ -57,8 +54,7 @@ echo "Agora vamos atualizar tudo!"
 dnf -y update
 
 echo "Muita atenção agora, vamos instalar o zabbix e tudo que ele precisa."
-dnf -y install zabbix-server-mysql zabbix-web-mysql zabbix-apache-conf zabbix-selinux-policy zabbix-agent zabbix-web-service
-
+dnf -y install zabbix-server-mysql zabbix-web-httpd zabbix-sql-scripts zabbix-selinux-policy zabbix-agent
 
 echo "Vamos fazer as configuracoes necesarias, preciso de sua TOTAL ATENCAO!"
 sleep 0.3
@@ -98,10 +94,11 @@ if ! command -v zabbix_server &> /dev/null; then
     exit 1
 fi
 
-echo "---------------------------------------------------------------------------------"
-echo "         Antes de fazer as configurações, vamos liberar duas portas."
-echo "            Vamos trocar a 10050 e a 10051 pelas 26050 e 26051"
-echo "---------------------------------------------------------------------------------"
+echo "#############################################################################################"
+echo "#                     Antes de fazer as configurações, vamos liberar duas portas.           #"
+echo "#                        Vamos trocar a 10050 e a 10051 pelas 26050 e 26051                 #"
+echo "#############################################################################################"
+sleep 2.0
 # Abra as portas permanentemente
 sudo firewall-cmd --permanent --add-port=26050/tcp
 sudo firewall-cmd --permanent --add-port=26051/tcp
@@ -110,23 +107,28 @@ sudo firewall-cmd --permanent --add-port=26051/tcp
 sudo firewall-cmd --reload
 echo "Pronto tudo feito por aqui!"
 
-echo "---------------------------------------------------------------------------------"
-echo "     Pronto agora que estão liberadas, vamos fechar as outras duas."
-echo "       As portas 10050 e 10051 ficaram fechadas, por segurança."
-echo "---------------------------------------------------------------------------------"
+
+echo "#############################################################################################"
+echo "#                   Pronto agora que estão liberadas, vamos fechar as outras duas.          #"
+echo "#                      As portas 10050 e 10051 ficaram fechadas, por segurança.             #"
+echo "#############################################################################################"
+sleep 2.0
+
 # Remova as portas permanentemente
 sudo firewall-cmd --permanent --remove-port=10050/tcp
 sudo firewall-cmd --permanent --remove-port=10051/tcp
 
 # Recarregue o firewall para aplicar as alterações
 sudo firewall-cmd --reload
-echo "Pronto tudo feito por aqui!"
 
-echo "----------------------------------------------------------------------------------"
-echo "Agora vamos configurar os arquivos de configuração do zabbix"
-echo "Preste muita a atenção, as portas 10050 e 10051 foram fechadas, ou seja deveram"
-echo "ser adicionadas as novas."
-echo "----------------------------------------------------------------------------------"
+
+echo "#############################################################################################"
+echo "#               Agora vamos configurar os arquivos de configuração do zabbix.               #"
+echo "#               Preste muita a atenção, as portas 10050 e 10051 foram fechadas,             #"
+echo "#                      ou seja deveram ser adicionadas as novas.                            #"
+echo "#############################################################################################"
+sleep 2.0
+
 
 # Pede ao usuário para configurar o Zabbix Server
 read -p "Hostname do servidor do banco de dados (DBHost): " db_host
@@ -157,17 +159,19 @@ systemctl start zabbix-server
 systemctl enable zabbix-server 
 # Verifica o status do serviço
 systemctl status zabbix-server 
-sleep 0.3
 
 echo "Serviços do zabbix server funcionando."
 
-
+sleep 2.0
+echo "##############################################################################################"
+echo "#                      Vamos configurar o agent zabbix para coletar.                         #"
+echo "##############################################################################################"
 
 # Configuração do zabbix-agent
 echo "Agora vamos configurar os serviços do zabbix agent, para coletar dados do server local."
 
 # Arquivo de configuração do Zabbix Server
-zabbix_config_file="/etc/zabbix/zabbix_server.conf"
+zabbix_config_file="/etc/zabbix/zabbix_agentd.conf"
 
 # Solicita ao usuário o valor para ListenPort
 # Define a porta que o zabbix agent usara
@@ -177,10 +181,15 @@ read -p "Informe a porta para ListenPort: " listen_port
 # Define o Hostname ou IP da maquia local.
 read -p "Informe o nome da máquina para Hostname: " hostname
 
+# Solicita ao usuario o valor para o server local.
+read -p "Informe o IP ou hostname do server:" $server
+
+
 # Atualiza o arquivo de configuração
 sed -i "s/^ListenPort=.*/ListenPort=$listen_port/" "$zabbix_config_file"
 sed -i "s/^Hostname=.*/Hostname=$hostname/" "$zabbix_config_file"
-sed -i "s/^LogRemoteCommands=.*/LogRemoteCommands=1/" "$zabbix_config_file"
+sed -i "s/^Server=./*Server=$server/" "$zabbix_conf_file"
+sed -i "s/^LogRemoteCommands=.*/LogRemoteCommands=1/" "$zabbix_config_file"	
 
 # Inicializa os serviços do zabbix-agent
 systemctl start zabbix-agent
@@ -191,12 +200,16 @@ systemctl status zabbix-agent
 
 # Inicializando serviços zabbix web
 systemctl restart zabbix-web-service
+# Habilita a inicialização do serviço junto ao OS
 systemctl enable zabbix-web-service
+# Verifica o status do serviço
 systemctl status zabbix-web-service
 
-echo "------------------------------------------------------------------------------------------------------"
 
-echo "Quase tudo pronto! agora precisamos fazer mais algumas configurações."
+sleep 2.0
+echo "##############################################################################################"
+echo "            Vamos desabilitar o SELinux para fazer as demais alterações                      #"
+echo "##############################################################################################"
 
 # Necessario desabilitar o selinux-policy
 echo " Após essa configuração a máquina será reiniciada."
@@ -213,17 +226,9 @@ else
 fi
 sleep 0.3
 
-echo "################################################################################################"
-echo "		Agora vamos configurar o Apache, ele usara HTTPS 										 #"
-echo "				Vamos liberar as portas 443	e 80												 #"
-echo "################################################################################################"
-# Liberar a porta 443 no firewall para o zabbix web
-firewall-cmd --add-port=443/tcp --permanent
-firewall-cmd --reload
 
-#liberar a porta 80 para acessar o zabbix apartir do IP/zabbix
-sudo firewall-cmd --permanent --add-port=80/tcp
-sudo firewall-cmd --reload
+
+
 
 
 
