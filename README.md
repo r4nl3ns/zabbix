@@ -52,8 +52,8 @@ chmod +x /zabbix/*.sh
     ./config-ambiente.sh
     ```
 
-    - Escolha qual Web Server usar.
-   Apache *vs* Nginx - Em ambos os casos, a consiguração do *https* pode ocorrer alguns erros, algo que deve ser dado muita atenção, e se possível corrigir manualmente.
+  - Escolha qual Web Server usar.
+  **Apache** *vs* **Nginx** - Em ambos os casos, a consiguração do *https* pode ocorrer alguns erros, algo que deve ser dado muita atenção, e se possível corrigir manualmente.
       ```bash
       # O servidor nginx será instalado e pré-configurado, mas é preciso verificar detalhadamente cada configuração
       ./nginx.sh
