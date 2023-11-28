@@ -54,13 +54,14 @@ chmod +x /zabbix/*.sh
 
   - Escolha qual Web Server usar.
   **Apache** *vs* **Nginx** - Em ambos os casos, a consiguração do *https* pode ocorrer alguns erros, algo que deve ser dado muita atenção, e se possível corrigir manualmente.
+
+      O servidor nginx será instalado e pré-configurado, mas é preciso verificar detalhadamente cada configuração
       ```bash
-      # O servidor nginx será instalado e pré-configurado, mas é preciso verificar detalhadamente cada configuração
       ./nginx.sh
       ```
+
+      O servidor apache será instalado e pré-configurado, mas é preciso dar *muita* atenção aconfiguração de certificado.
       ```bash
-      # O servidor apache será instalado e pré-configurado, mas é preciso dar *muita* atenção a
-      # configuração de certificado.
       ./apache-zbx-install.sh
       ```
 
