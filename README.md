@@ -60,11 +60,11 @@ chmod +x /zabbix/*.sh
       ```
       ```bash
       # O servidor apache será instalado e pré-configurado, mas é preciso dar *muita* atenção a
-      configuração de certificado.
+      # configuração de certificado.
       ./apache-zbx-install.sh
       ```
 
-      echo "continua..."
+ "continua..."
       
     
 
