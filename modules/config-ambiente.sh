@@ -20,13 +20,13 @@ echo "#                  Vamos instalar tudo que usaremos para esse ambiente zab
 echo "#############################################################################################"
 sleep 2.0
 
-dnf -y install net-tools
-dnf -y install nano
-dnf -y install openssl
-dnf -y install mod_ssl
-dnf -y install net-snmp
-systemctl enable snmpd
-systemctl start snmpd
+sudo dnf -y install net-tools
+sudo dnf -y install nano
+sudo dnf -y install openssl
+sudo dnf -y install mod_ssl
+sudo dnf -y install net-snmp
+sudo systemctl enable snmpd
+sudo systemctl start snmpd
 sleep 2.0
 
 
