@@ -24,19 +24,51 @@ Clone o repositório:
 
 ```bash
 git clone https://github.com/r4nl3ns/zabbix-6.4.git
-cd zabbix
+cd /zabbix
 ```
-
 Permissões:
 
 ```bash
 chmod +x /zabbix/*.sh
 ```
 
-Execute na seguinte orden:
 
-```bash
-./config-ambiente.sh
-```
+
+# Existe mais de uma opção de instalação.
+
+- **Zabbix All in One** (tudo no mesmo servidor)
+  Para isso execute o seguinte comando:
+  ```bash
+  cd /zabbix one server
+  ./zabbix-6.4-install.sh
+  ```
+
+ - **Zabbix em Alta Disponibilidade** ( HA )
+ Para isso seguiremos uma ordem. Os arquivos citados dentro do diretório `/modules` são definidos por ordem, e importância.
+    O `config-ambiente`deve ser executado em **todas as máquinas** ele é responsável por instalar tudo que elas precisam, e fazer as devidas alterações, ou seja, não importa como ficará
+    a sua estrutura de *VMS* o ambiente deve ser configurado, e é isso que esse *shell* faz.
+    ```bash
+    cd /modules
+    ./config-ambiente.sh
+    ```
+
+  - Escolha qual Web Server usar.
+  **Apache** *vs* **Nginx** - Em ambos os casos, a consiguração do *https* pode ocorrer alguns erros, algo que deve ser dado muita atenção, e se possível corrigir manualmente.
+
+      O servidor nginx será instalado e pré-configurado, mas é preciso verificar detalhadamente cada configuração
+      ```bash
+      ./nginx.sh
+      ```
+
+      O servidor apache será instalado e pré-configurado, mas é preciso dar *muita* atenção aconfiguração de certificado.
+      ```bash
+      ./apache-zbx-install.sh
+      ```
+
+ "continua..."
+      
+    
+
+
 
 
