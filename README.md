@@ -29,7 +29,7 @@ cd /zabbix
 Permissões:
 
 ```bash
-chmod +x /zabbix/*.sh
+find /zabbix -type f -name "*.sh" -exec chmod +x {} \;
 ```
 
 
