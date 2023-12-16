@@ -52,6 +52,17 @@ rpm -Uvh https://repo.zabbix.com/zabbix/6.4/rhel/9/x86_64/zabbix-release-6.4-1.e
 sudo dnf clean all
 cd /
 
+repo_file="/etc/yum.repos.d/zabbix.repo"
+
+# Verificar se o arquivo de repositório existe
+if [ -e "$repo_file" ]; then
+    # Descomentar a linha excludepkgs
+    sed -i 's/^excludepkgs=zabbix*/#excludepkgs=zabbix*/' "$repo_file"
+    echo "Linha excludepkgs descomentada no arquivo $repo_file."
+else
+    echo "Arquivo $repo_file não encontrado."
+fi
+
 #--------------------------------------Desabilita o SELINUX--------------------------------------------
 sudo nano /etc/selinux/config
 #SELINUX=disable
@@ -96,7 +107,7 @@ sudo firewall-cmd --add-port10051/tcp --permanente
 # Libera porta para banco de dados MySQL
 sudo firewall-cmd --add-port=3306/tcp --permanent
 # Libera porta para banco de dados PostgreSQL
-sudo firewall-cmd ---add-port=5432/tcp --permanent
+sudo firewall-cmd --add-port=5432/tcp --permanent
 # Aplica as regras no fw
 sudo firewall-cmd --reload
 sleep 2.0
