@@ -18,67 +18,16 @@ EOF
 
 echo -e "\033[0m"  # Restaura a cor do texto para o padrão
 
+
+#------------------------------------------Instalação Tools----------------------------------------------
+
+
 # Instalação do Apache versão (httpd)
-dnf -y install httpd mod_ssl
-systemctl enable httpd.service
-systemctl start httpd.service
-echo "---------------------------------------------------------------------------------"
-echo " Cria os repositórios necessários para os certificados."
-mkdir -p /etc/httpd/ssl/private
-chmod 700 /etc/httpd/ssl/private
-echo "---------------------------------------------------------------------------------"
-echo " Configura dominio que será usado."
-
-# Defina o nome do domínio
-DOMINIO="monx.com"
-
-# Caminho para os certificados SSL
-SSL_PATH="/etc/httpd/ssl/private"
-
-# Caminho para os certificados privados
-SSL_PRIVATE_PATH="$SSL_PATH/private"
-sleep 3.0
+sudo dnf -y install httpd mod_ssl
+sudo systemctl enable httpd.service
+sudo systemctl start httpd.service
 
 
-echo "##################################################################################################"
-echo "#             Uma opção ao certificado manual, feito passo a passo é usar o CertBot,             #"
-echo "#       ele é automatico, cria o certificado e já adiciona no virtualhost sem mais trabalhos.    #"
-echo "#          CertBot ->  git clone https://github.com/letsencrypt/letsencrypt                      #"
-echo "##################################################################################################"
-sleep 5.0
-
-
-# Gere um certificado autoassinado para SSL (certificado e chave aqui gerados, são para uso geral.)
-openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
-  -keyout /etc/httpd/ssl/private/private.monx.key \
-  -out /etc/httpd/ssl/certificate.monx.crt \
-  -subj "/C=/ST=/L=/O=/OU=/CN=monx.com/emailAddress=" \
-  -passout pass:
-
-# Adicione o domínio ao arquivo /etc/hosts
-echo "127.0.0.1 $DOMINIO" >> /etc/hosts
-
-# Crie um arquivo de configuração para o site Zabbix
-cat <<EOL > /etc/httpd/conf.d/zabbix-ssl.conf
-<VirtualHost *:443>
-  ServerAdmin ranlens.denck@protonmail.com
-  ServerName $DOMINIO
-  DocumentRoot /var/www/html
-
-  ErrorLog \${APACHE_LOG_DIR}/error.log
-  CustomLog \${APACHE_LOG_DIR}/access.log combined
-
-  SSLEngine on
-  SSLCertificateFile $SSL_PATH/$DOMINIO.crt
-  SSLCertificateKeyFile $SSL_PRIVATE_PATH/$DOMINIO.key
-
-  <Directory /var/www/html>
-    Options Indexes FollowSymLinks
-    AllowOverride All
-    Require all granted
-  </Directory>
-</VirtualHost>
-EOL
 
 # Ative o novo site e reinicie o Apache
 systemctl enable httpd

@@ -15,25 +15,47 @@ echo "
 ···········································································                                 
 "
 
-echo "#############################################################################################"
-echo "#                  Vamos instalar tudo que usaremos para esse ambiente zabbix.              #"
-echo "#############################################################################################"
 sleep 2.0
 
-sudo dnf -y install net-tools
-sudo dnf -y install nano
-sudo dnf -y install openssl
-sudo dnf -y install mod_ssl
-sudo dnf -y install net-snmp
+#--------------------------------------Instalação de Tools-----------------------------------------------
+sudo dnf -y install snmpd pacemaker corosync net-tools nano openssl mod_ssl net-snmp chrony glibc-langpack-pt
+#--------------------------------------Habilitando Tools-------------------------------------------------
 sudo systemctl enable snmpd
+sudo systemctl enable pacemaker
+sudo systemctl enable corosync
+sudo systemctl enable chrony
+#--------------------------------------Startando Tools---------------------------------------------------
 sudo systemctl start snmpd
+sudo systemctl start pacemaker
+sudo systemctl start corosync
+sudo systemctl start chrony
+#--------------------------------------Conferindo status-------------------------------------------------
+sudo systemctl status snmpd
+sudo systemctl status pacemaker
+sudo systemctl status corosync
+sudo systemctl status chrony
+setenforce 0
+#--------------------------------------Conferindo a Data-------------------------------------------------
+sudo timedatectl set-timezone America/Sao_Paulo
+sudo systemctl restart systemd-timedated
+date -conferir se está correta a data
+sleep 1.0
+hwclock -conferir a saida
+sleep 1.0
+timedatectl status
+echo "Parece estar tudo funcionando corretamente!"
+sleep 1.0
+
+#--------------------------------------Baixando pacotes zabbix--------------------------------------------
 cd /tmp/
 rpm -Uvh https://repo.zabbix.com/zabbix/6.4/rhel/9/x86_64/zabbix-release-6.4-1.el9.noarch.rpm
 sudo dnf clean all
 cd /
 
-sudo dnf -y install zabbix-server-pgsql zabbix-web-pgsql zabbix-nginx-conf zabbix-selinux-policy zabbix-agent
-
+#--------------------------------------Desabilita o SELINUX--------------------------------------------
+sudo nano /etc/selinux/config
+#SELINUX=disable
+sleep 1.0
 
 echo "#############################################################################################"
 echo "#                      Configurando Hostname e associando ao IP de rede.                    #"
@@ -62,40 +84,22 @@ echo "Entrada adicionada ao /etc/hosts:"
 grep "$user_hostname" /etc/hosts
 sleep 2.0
 
-
-echo "#############################################################################################"
-echo "#                      Vamos liberar as portas usadas pelo HTTPS no firewall.               #"
-echo "#############################################################################################"
-sleep 2.0
+#--------------------------------------Configura o Firewall do ambiente--------------------------------------
 # Libera as portas 80 e 443 no firewall
-firewall-cmd --add-port=80/tcp --permanent
-firewall-cmd --add-port=443/tcp --permanent
-firewall-cmd --reload
+sudo firewall-cmd --add-port=80/tcp --permanent
+# Libera porta para https
+sudo firewall-cmd --add-port=443/tcp --permanent
+# Libera porta para o zabbix agent
+sudo firewall-cmd --add-port=10050/tcp --permanente
+# Libera porta para zabbix proxy
+sudo firewall-cmd --add-port10051/tcp --permanente
+# Libera porta para banco de dados MySQL
+sudo firewall-cmd --add-port=3306/tcp --permanent
+# Libera porta para banco de dados PostgreSQL
+sudo firewall-cmd ---add-port=5432/tcp --permanent
+# Aplica as regras no fw
+sudo firewall-cmd --reload
 sleep 2.0
 
 
 
-echo "#############################################################################################"
-echo "#              Vamos configurar a hora, e adicionar o pacote de idiomas.                    #"
-echo "#############################################################################################"
-sleep 2.0
-
-
-# Instala o pacote de idiomas para o português do Brasil
-sudo dnf -y install -y glibc-langpack-pt
-
-# Configura a localidade para o português do Brasil em UTF-8
-echo 'LANG=pt_BR.utf8' | sudo tee /etc/locale.conf
-
-# Configura o fuso horário para Brasília
-sudo timedatectl set-timezone America/Sao_Paulo
-
-# Reinicia o serviço de horário para aplicar as alterações
-sudo systemctl restart systemd-timedated
-sleep 2.0
-
-
-echo "#############################################################################################"
-echo "#                            Vamos atualizar todos os repositórios.                         #"
-echo "#############################################################################################"
-dnf -y update
