@@ -1,5 +1,10 @@
 #!/bin/bash
 
+#-------------------------------------------------Instalar tools---------------------------------------------#
+sudo dnf -y install nano
+sudo dnf -y install chrony
+sudo dnf -y install net-tools
+
 # Obtém o endereço IP da máquina
 ip_address=$(hostname -I | awk '{print $1}')
 

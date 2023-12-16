@@ -1,5 +1,10 @@
-dnf -y install nano
-dnf -y install chrony
+#!/bin/bash
+
+
+
+sudo dnf -y install nano
+sudo dnf -y install chrony
+sudo dnf -y install net-tools
 
 #desabilitar selinux
 nano /etc/selinux/config

@@ -1,5 +1,21 @@
 #!/bin/bash
+#-------------------------------------------------Instalar tools---------------------------------------------#
+sudo dnf -y install nano
+sudo dnf -y install chrony
+sudo dnf -y install net-tools
+sudo dnf -y install bind-utils
 
+echo ----------------------------Baixar os pacotes necessários------------------------------------------------
+sleep 1.0
+cd /tmp/
+rpm -Uvh https://repo.zabbix.com/zabbix/6.4/rhel/9/x86_64/zabbix-release-6.4-1.el9.noarch.rpm
+sudo dnf clean all
+cd /
+#-------------------------------------Agora vamos instalar os pacotes que o Postgresql-14 precisa----------------------------#
+sudo dnf -y install zabbix-sql-scripts zabbix-agent
+
+echo "Instalação feita com sucesso!"
+#------------------------------------------Agora vamos instalar o Postgresql-14----------------------------------------------#
 # Verificar a lista de repositórios disponíveis para RHELL
 dnf module list postgresql
 
@@ -7,7 +23,7 @@ dnf module list postgresql
 dnf -y install https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
 
 # Desativar o repositório padrão do PostgreSQL
-dnf -qy module disable postgresql
+dnf -qy module disable postgresql 
 
 # Instalar o PostgreSQL 14
 dnf -y install postgresql14 postgresql14-server 

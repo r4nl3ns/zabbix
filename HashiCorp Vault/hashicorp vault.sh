@@ -31,7 +31,10 @@ echo "# contato         : Ranlens Denck <ranlens.denck@protonmail.com>"
 echo "# ATTENTION - EXECUTE TODO O BASH COMO ROOT"
 ### END PROJECT INFO
 sleep 2.0
-
+#-------------------------------------------------Instalar tools---------------------------------------------#
+sudo dnf -y install nano
+sudo dnf -y install chrony
+sudo dnf -y install net-tools
 
 # Definir a versão do HashiCorp Vault
 VAULT_VERSION="1.15.0"

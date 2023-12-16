@@ -27,7 +27,12 @@ sudo dnf -y install mod_ssl
 sudo dnf -y install net-snmp
 sudo systemctl enable snmpd
 sudo systemctl start snmpd
-sleep 2.0
+cd /tmp/
+rpm -Uvh https://repo.zabbix.com/zabbix/6.4/rhel/9/x86_64/zabbix-release-6.4-1.el9.noarch.rpm
+sudo dnf clean all
+cd /
+
+sudo dnf -y install zabbix-server-pgsql zabbix-web-pgsql zabbix-nginx-conf zabbix-selinux-policy zabbix-agent
 
 
 echo "#############################################################################################"
