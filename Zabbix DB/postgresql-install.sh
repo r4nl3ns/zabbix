@@ -38,7 +38,7 @@ sudo systemctl enable postgresql-14
 # Verifica o status do postgresql
 sudo systemctl status postgresql-14
 
---
+#------------------------------------------Criação do usuario do banco de Dados----------------------------------------------#
 # Criar usuario zabbix
 sudo -u postgres createuser --pwprompt zabbix
 # Criar banco zabbix
