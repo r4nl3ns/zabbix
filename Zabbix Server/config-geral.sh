@@ -38,6 +38,8 @@ setenforce 0
 #--------------------------------------Conferindo a Data-------------------------------------------------
 sudo timedatectl set-timezone America/Sao_Paulo
 sudo systemctl restart systemd-timedated
+sudo timedatectl show --property=RTC
+sudo timedatectl set-local-rtc 1
 date -conferir se está correta a data
 sleep 1.0
 hwclock -conferir a saida
@@ -101,9 +103,9 @@ sudo firewall-cmd --add-port=80/tcp --permanent
 # Libera porta para https
 sudo firewall-cmd --add-port=443/tcp --permanent
 # Libera porta para o zabbix agent
-sudo firewall-cmd --add-port=10050/tcp --permanente
+sudo firewall-cmd --add-port=10050/tcp --permanent
 # Libera porta para zabbix proxy
-sudo firewall-cmd --add-port10051/tcp --permanente
+sudo firewall-cmd --add-port10051/tcp --permanent
 # Libera porta para banco de dados MySQL
 sudo firewall-cmd --add-port=3306/tcp --permanent
 # Libera porta para banco de dados PostgreSQL
