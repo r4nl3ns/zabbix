@@ -14,7 +14,7 @@ sudo dnf clean all
 cd /
 
 # ----------------------------------Vamos instalar o script SQL que o banco precisa----------------------------#
-sudo dnf -y zabbix-sql-scripts zabbix-selinux-policy zabbix-agent
+sudo dnf -y install zabbix-sql-scripts zabbix-selinux-policy zabbix-agent
 
 echo "Instalação feita com sucesso!"
 
