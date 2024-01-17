@@ -27,8 +27,6 @@ sudo dnf -y install httpd mod_ssl
 sudo systemctl enable httpd.service
 sudo systemctl start httpd.service
 
-
-
 # Ative o novo site e reinicie o Apache
 systemctl enable httpd
 systemctl restart httpd
@@ -40,27 +38,8 @@ firewall-cmd --reload
 
 echo "Apache instalado e configurado com sucesso para o Zabbix na porta 443 com HTTPS."
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 sudo chown -R apache:apache /etc/httpd/
 sudo chmod -R 755 /etc/httpd/
-
-
-
-
-
-
 
 #certificado
 
@@ -70,12 +49,7 @@ openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
   -subj "/C=/ST=/L=/O=/OU=/CN=monx.com/emailAddress=" \
   -passout pass:
 
-
-
-
-
-
-Editar o arquivo de configuração Apache SSL (/etc/httpd/conf.d/ssl.conf): 
+# Editar o arquivo de configuração Apache SSL (/etc/httpd/conf.d/ssl.conf): 
 	DocumentRoot "/usr/share/zabbix"
        ServerName example.com:443
        SSLCertificateFile /etc/httpd/ssl/certificate.monx.crt
