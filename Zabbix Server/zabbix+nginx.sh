@@ -1,5 +1,8 @@
 #!/bin/bash
 
+
+# Instalação dos pacotes zabbix server, agent, e servidor web Nginx
+# É importante verificar as configurações após executar o bash
 #-------------------------------------------------Instalar tools---------------------------------------------#
 sudo dnf -y install nano
 sudo dnf -y install chrony
@@ -47,11 +50,3 @@ sudo ln -s /etc/nginx/sites-available/zabbix /etc/nginx/sites-enabled/
 # Reinicia o Nginx para aplicar as configurações
 sudo systemctl restart nginx
 
-#--------------------------------------------------------------END----------------------------------------------------------------
-echo " _  _   _____   _____ ______ _____ "
-echo "| || | |  __ \\ / ____|  ____/ ____|"
-echo "| || |_| |__) | (___ | |__ | |     "
-echo "|__   _|  _  / \\___ \\|  __|| |     "
-echo "   | | | | \\ \\ ____) | |____ |____ "
-echo "   |_| |_|  \\_\\_____/|______\\_____|"
-echo "                                    "

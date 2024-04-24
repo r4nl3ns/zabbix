@@ -1,39 +1,25 @@
 #!/bin/bash
 
-echo "
-···········································································
-:  ____             __ _                            /\/|             _      :
-: / ___|___  _ __  / _(_) __ _ _   _ _ __ __ _  ___|/\/_  ___     __| | ___ :
-:| |   / _ \| '_ \| |_| |/ _` | | | | '__/ _` |/ __/ _` |/ _ \   / _` |/ _ \:
-:| |__| (_) | | | |  _| | (_| | |_| | | | (_| | (_| (_| | (_) | | (_| |  __/:
-: \____\___/|_| |_|_| |_|\__, |\__,_|_|  \__,_|\___\__,_|\___/   \__,_|\___|:
-:    _              _    |___/         _        )_)                         :
-:   / \   _ __ ___ | |__ (_) ___ _ __ | |_ ___                              :
-:  / _ \ | '_ ` _ \| '_ \| |/ _ \ '_ \| __/ _ \                             :
-: / ___ \| | | | | | |_) | |  __/ | | | ||  __/                             :
-:/_/   \_\_| |_| |_|_.__/|_|\___|_| |_|\__\___|                             :
-···········································································                                 
-"
-
-sleep 2.0
+# Projeto de Implantação da Ferramenta de Monitoramento Zabbix
+# Scrip de Configuração de ambiente RHEL
 
 #--------------------------------------Instalação de Tools-----------------------------------------------
-sudo dnf -y install snmpd pacemaker corosync net-tools nano openssl mod_ssl net-snmp chrony glibc-langpack-pt
+sudo dnf -y install net-snmp pacemaker corosync net-tools nano openssl mod_ssl net-snmp chrony glibc-langpack-pt
 #--------------------------------------Habilitando Tools-------------------------------------------------
 sudo systemctl enable snmpd
 sudo systemctl enable pacemaker
 sudo systemctl enable corosync
-sudo systemctl enable chrony
+sudo systemctl enable chronyd
 #--------------------------------------Startando Tools---------------------------------------------------
 sudo systemctl start snmpd
 sudo systemctl start pacemaker
 sudo systemctl start corosync
-sudo systemctl start chrony
+sudo systemctl start chronyd
 #--------------------------------------Conferindo status-------------------------------------------------
 sudo systemctl status snmpd
 sudo systemctl status pacemaker
 sudo systemctl status corosync
-sudo systemctl status chrony
+sudo systemctl status chronyd
 setenforce 0
 #--------------------------------------Conferindo a Data-------------------------------------------------
 sudo timedatectl set-timezone America/Sao_Paulo
@@ -47,6 +33,15 @@ sleep 1.0
 timedatectl status
 echo "Parece estar tudo funcionando corretamente!"
 sleep 1.0
+#-----------------------------------------CHRONYD MANUAL-------------------------------------------------
+#NTP SERVERS
+sudo nano /etc/chronyd.conf
+# Na opção (server) adicionar o server necessário, abaixo algumas opções de server para UTC -3
+server 0.br.pool.ntp.org iburst
+server 1.br.pool.ntp.org iburst
+server 2.br.pool.ntp.org iburst
+server 3.br.pool.ntp.org iburst
+
 
 #--------------------------------------Baixando pacotes zabbix--------------------------------------------
 cd /tmp/
@@ -105,14 +100,14 @@ sudo firewall-cmd --add-port=443/tcp --permanent
 # Libera porta para o zabbix agent
 sudo firewall-cmd --add-port=10050/tcp --permanent
 # Libera porta para zabbix proxy
-sudo firewall-cmd --add-port10051/tcp --permanent
+sudo firewall-cmd --add-port=10051/tcp --permanent
 # Libera porta para banco de dados MySQL
 sudo firewall-cmd --add-port=3306/tcp --permanent
 # Libera porta para banco de dados PostgreSQL
 sudo firewall-cmd --add-port=5432/tcp --permanent
 # Aplica as regras no fw
 sudo firewall-cmd --reload
-sleep 2.0
+
 
 
 
